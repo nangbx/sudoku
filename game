@@ -1,0 +1,85 @@
+using System;
+
+namespace ConsoleApp2
+{
+    
+    class Program
+    {
+        static bool isSafe(int[,] grid, int x, int y, int num)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                if (grid[i,y] == num)
+                    return false;
+            }
+            for (int i = 0; i < 9; i++)
+            {
+                if (grid[x,i] == num)
+                    return false;
+            }
+            int startRow = x - x % 3;
+            int startCol = y - y % 3;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (grid[i + startRow,j + startCol] == num)
+                        return false;
+                }
+            }
+            return true;
+        }
+        static bool solveSuduko(int[,] grid, int row, int col)
+        {
+            if (row == 8 && col == 9)
+                return true;
+            if (col == 9)
+            {
+                row++;
+                col = 0;
+            }    
+            if (grid[row,col] > 0)
+                return solveSuduko(grid, row, col + 1);
+            for (int num = 1; num <= 9; num++)
+            {
+                if(isSafe(grid, row, col, num))
+                {
+                    grid[row,col] = num;
+                    if (solveSuduko(grid, row, col + 1))
+                        return true;
+                }
+                grid[row,col] = 0;
+            }
+            return false;
+        }
+        static void Main(string[] args)
+        {
+
+
+            Console.WriteLine("Hello World!");
+            int[,] grid = new int[9, 9];
+            for (int i = 0; i < 9; i++)
+            {
+                string s = Console.ReadLine();
+                string[] arr = s.Split(' ');
+                for (int j = 0; j < 9; j++)
+                {
+                    grid[i, j] = int.Parse(arr[j]);
+                }
+            }
+            if (solveSuduko(grid, 0, 0))
+            {
+                for (int i = 0; i < 9; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        Console.Write(grid[i, j]);
+                    }
+                    Console.Write("\n");
+                }
+            }
+            Console.ReadKey();
+            
+        }
+    }
+}
